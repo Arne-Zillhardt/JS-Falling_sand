@@ -1,0 +1,25 @@
+body {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #131516;
+    color: white;
+}
+
+.sand-table {
+    border-color: white;
+    width: 80vw;
+    height: 80vh;
+}
+
+td,
+th {
+    padding: 1px;
+}
+
+.sand-cell {
+    border-color: white;
+    background-color: white;
+    border-radius: 2px;
+}
