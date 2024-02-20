@@ -10,7 +10,8 @@ body {
 .sand-table {
     border-color: white;
     width: 80vw;
-    height: 80vh;
+    height: 70vh;
+    margin-bottom: 2vh;
 }
 
 td,
@@ -22,4 +23,23 @@ th {
     border-color: white;
     background-color: white;
     border-radius: 2px;
+}
+
+.reset-button {
+    background-color: white;
+    border: none;
+    border-radius: 100px;
+    width: 9vw;
+    height: 3vh;
+}
+
+.reset-button:hover {
+    background-color: rgb(197, 197, 197);
+}
+
+.reset-button:active {
+    background-color: rgb(139, 139, 139);
+    width: 7vw;
+    height: 2.75vh;
+    font-size: 0.8em;
 }
