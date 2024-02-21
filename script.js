@@ -115,12 +115,3 @@ function initBoard() {
         }
     }
 }
-
-/*
-The current code has a few areas that could be optimized for better performance:
-
-Avoiding unnecessary object creation: The blockFall function creates a new array of Block objects every time it's called. This is not only memory-intensive but also computationally expensive. Instead, you could modify the existing Block objects directly.
-Optimizing the getBlockFromBoardByLocation function: This function iterates over the entire board every time it's called, which can be slow if the board is large. You could create a two-dimensional array where the first index is the x-coordinate and the second index is the y-coordinate, which would allow you to access blocks directly by their location.
-Improving the neighbors getter: The current implementation iterates over the entire board to find the neighbors of a block. This can be optimized by only considering blocks that are adjacent in the x and y directions.
-Optimizing the blockFall function: The current implementation checks if a block is active and then checks if the block underneath is not active. This can be optimized by only checking blocks that are active.
-*/
