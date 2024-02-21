@@ -1,32 +1,22 @@
-let board = [];
+let board = null;
 const height = 35;
-const width = 30;
-
-class Location {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-}
+const width = 50;
 
 class Block {
     constructor(x, y) {
-        this.location = new Location(x, y);
+        this.x = x;
+        this.y = y;
         this.active = false;
     }
 
     get blockUnderneath() {
-        let locY = this.location.y + 1;
+        let locY = this.y + 1;
 
-        if (locY > height) {
+        if (locY > height + 1) {
             return this;
         }
 
-        for (let block of board) {
-            if (block.location.y == locY && block.location.x == this.location.x) {
-                return block;
-            }
-        }
+        return board[this.x][locY];
     }
 
     get neighbors() {
@@ -38,13 +28,13 @@ class Block {
                     continue;
                 }
 
-                let x = this.location.x + i;
-                let y = this.location.y + j;
-                if (x < 0 || x > 20 || y < 0 || y > 20) {
+                let x = this.x + i;
+                let y = this.y + j;
+                if (x < 0 || x > width || y < 0 || y > height) {
                     continue;
                 }
 
-                neighbors.push(getBlockFromBoardByLocation(x, y));
+                neighbors.push(board[x][y]);
             }
         }
 
@@ -52,49 +42,43 @@ class Block {
     }
 }
 
-function getBlockFromBoardByLocation(x, y) {
-    for (let i = 0; i < board.length; i++) {
-        if (board[i].location.x == x && board[i].location.y == y) {
-            return board[i];
-        }
-    }
-}
-
 function printSandCells() {
-    for (let i = 0; i < board.length; i++) {
-        let element = document.getElementById(board[i].location.x + "_" + board[i].location.y);
-        element.style.backgroundColor = "white";
+    for (let i = 0; i <= width; i++) {
+        for (let j = 0; j <= height; j++) {
+            let element = document.getElementById(i + "_" + j);
+            element.style.backgroundColor = "white";
 
-        if (board[i].active) {
-            element.style.backgroundColor = "#f2d33c";
-            //element.style.backgroundColor = "#" + colors[colorToPick];
+            if (board[i][j].active) {
+                element.style.backgroundColor = "#f2d33c";
+                //element.style.backgroundColor = "#" + colors[colorToPick];
+            }
         }
     }
 }
 
 function blockFall() {
-    let newBoard = new Array();
-    for (let i = 0; i < board.length; i++) {
-        newBoard.push(new Block(board[i].location.x, board[i].location.y));
+    let newBoard = Array.from(Array(width + 1), () => new Array(height + 1));
+    for (let i = 0; i <= width; i++) {
+        for (let j = 0; j <= height; j++) {
+            newBoard[i][j] = new Block(i, j);
+        }
     }
 
-    for (let i = 0; i < board.length; i++) {
-        let blockFromBoard = board[i];
-        let blockFromNewBoard = newBoard[i];
+    for (let i = 0; i <= width; i++) {
+        for (let j = 0; j <= height; j++) {
+            let block = board[i][j];
 
-
-        if (blockFromBoard.active) {
-            blockFromNewBoard.active = true;
-
-            if (blockFromNewBoard.blockUnderneath != null && !blockFromNewBoard.blockUnderneath.active) {
-                blockFromNewBoard.active = false;
-
-                for (let j = 0; j < newBoard.length; j++) {
-                    if (newBoard[j].location.x == newBoard[i].blockUnderneath.location.x && newBoard[j].location.y == newBoard[i].blockUnderneath.location.y) {
-                        newBoard[j].active = true;
-                    }
-                }
+            if (!block.active) {
+                continue;
             }
+
+            if (block.blockUnderneath == null || block.blockUnderneath.active) {
+                newBoard[i][j].active = true;
+                continue;
+            }
+
+            newBoard[i][j].active = false;
+            newBoard[i][j + 1].active = true;
         }
     }
 
@@ -111,23 +95,32 @@ function start() {
 }
 
 function blockSpawn(x, y) {
-    let block = getBlockFromBoardByLocation(x, y);
+    let block = board[x][y];
     let blocks = block.neighbors;
 
     block.active = true;
     for (let i = 0; i < blocks.length; i++) {
-        if (Math.random() < 0.35) {
+        if (Math.random() < 0.5) {
             blocks[i].active = true;
         }
     }
 }
 
 function initBoard() {
-    board = new Array();
+    board = Array.from(Array(width + 1), () => new Array(height + 1));
 
     for (var i = 0; i <= width; i++) {
         for (var j = 0; j <= height; j++) {
-            board.push(new Block(i, j));
+            board[i][j] = new Block(i, j);
         }
     }
 }
+
+/*
+The current code has a few areas that could be optimized for better performance:
+
+Avoiding unnecessary object creation: The blockFall function creates a new array of Block objects every time it's called. This is not only memory-intensive but also computationally expensive. Instead, you could modify the existing Block objects directly.
+Optimizing the getBlockFromBoardByLocation function: This function iterates over the entire board every time it's called, which can be slow if the board is large. You could create a two-dimensional array where the first index is the x-coordinate and the second index is the y-coordinate, which would allow you to access blocks directly by their location.
+Improving the neighbors getter: The current implementation iterates over the entire board to find the neighbors of a block. This can be optimized by only considering blocks that are adjacent in the x and y directions.
+Optimizing the blockFall function: The current implementation checks if a block is active and then checks if the block underneath is not active. This can be optimized by only checking blocks that are active.
+*/

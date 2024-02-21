@@ -11,7 +11,7 @@
             <?php
                 for($i = 0; $i <= 35; $i++){
                     echo "<tr>";
-                    for($j = 0; $j <= 30; $j++){
+                    for($j = 0; $j <= 50; $j++){
                         echo "<td id=\"". $j ."_". $i ."\" class=\"sand-cell\" onmouseEnter=\"blockSpawn($j, $i)\"></td>";
                     }
                     echo "</tr>";
